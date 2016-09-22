@@ -78,7 +78,7 @@ for index in range(len(table)):
         column_name = column_headers[column]
         resource_uri = DATA_NAMESPACE['r_' + str(index)]
 
-        property_uri = DATA_NAMESPACE[slugify(column_name)]
+        property_uri = SCHEMA_NAMESPACE[slugify(column_name)]
 
         data.add((resource_uri, RDF.type, INSTANCE_CLASS))
 
