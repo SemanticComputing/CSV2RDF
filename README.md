@@ -1,5 +1,5 @@
 # CSV2RDF
-A generic CSV to RDF conversion tool
+A tool for converting a CSV file to simple RDF
 
 Installation
 ------------
@@ -9,4 +9,4 @@ pip install -r requirements.txt
 Usage help
 ----------
 
-python csv2rdf.py
+python csv2rdf/csv2rdf.py
