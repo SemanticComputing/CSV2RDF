@@ -6,7 +6,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name="CSV2RDF",
+    name="csv2rdf",
     version="0.0.1",
     author="Mikko Koho",
     author_email="mikko.koho@iki.fi",
@@ -15,5 +15,5 @@ setup(
     keywords="csv, rdf, linked data",
     url="",
     long_description=read('README.md'),
-    packages=['CSV2RDF'],
+    packages=['csv2rdf'],
 )
