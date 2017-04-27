@@ -1,0 +1,35 @@
+data
+
+# Python
+*.py[co]
+*.pot
+.coverage
+
+# Packages
+
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+
+# Installer logs
+pip-log.txt
+
+#Dev tools
+.project
+.pydevproject
+.settings/
+.idea
+
+# Backup files
+*~
+
+# Logs
+*.log
