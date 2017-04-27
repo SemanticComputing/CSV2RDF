@@ -64,20 +64,23 @@ class CSV2RDF:
                 if value:
                     self.data.add((resource_uri, property_uri, Literal(value)))
 
-    def write_rdf(self, output_file_data, output_file_schema, fformat='guess'):
-        self.data.serialize(format=fformat, destination=output_file_data)
-        self.schema.serialize(format=fformat, destination=output_file_schema)
+    def write_rdf(self, output_file_data, output_file_schema, fformat='turtle'):
+        if output_file_data:
+            self.data.serialize(format=fformat, destination=output_file_data)
+        if output_file_schema:
+            self.schema.serialize(format=fformat, destination=output_file_schema)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CSV2RDF')
 
     parser.add_argument("input", help="Input CSV file")
-    parser.add_argument("outdata", help="Output RDF data file")
-    parser.add_argument("outschema", help="Output RDF schema file")
-    parser.add_argument("tclass", metavar="TARGET_CLASS", help="Target class for target property values")
-    parser.add_argument("tnamespace", metavar="TARGET_NAMESPACE", help="Namespace for target values", default="http://")
-    parser.add_argument("schemanamespace", metavar="SCHEMA_NAMESPACE", help="Namespace for property URIs",
+    parser.add_argument("--outdata", help="Output RDF data file", default="output_data.ttl")
+    parser.add_argument("--outschema", help="Output RDF schema file", default="output_schema.ttl")
+    parser.add_argument("--tclass", metavar="TARGET_CLASS", help="Target class for target property values",
+                        default="http://example.org/Class")
+    parser.add_argument("--tnamespace", metavar="TARGET_NAMESPACE", help="Namespace for target values", default="http://")
+    parser.add_argument("--schemanamespace", metavar="SCHEMA_NAMESPACE", help="Namespace for property URIs",
                         default="http://")
 
     parser.add_argument("--format", default='guess', type=str,
