@@ -17,21 +17,39 @@ logging.basicConfig(filename='vocab.log', filemode='a', level=logging.DEBUG,
 log = logging.getLogger(__name__)
 
 
+def create_unused_uri(uri, used_uris):
+    orig_uri = uri
+    i = 1
+    while uri in used_uris:
+        log.info('Changing duplicate URI: %s <--> %s' % (used_uris[uri], orig_uri))
+        uri = "{uri}_{index}".format(uri=uri, index=i)
+        i += 1
+
+    return uri
+
+
 def vocabularize(graph, namespace):
     """
     Transform literal values into a RDF flat RDF vocabulary. Splits values by '/'.
 
     :return:
     """
+
     output = Graph()
     vocab = Graph()
+    used_uris = {}
 
     log.debug('Starting vocabulary creation')
 
     for (sub, obj) in graph.subject_objects(URIRef(args.property)):
         for value in [occ.strip().lower() for occ in str(obj).split('/')]:
 
-            new_obj = namespace[slugify(value)]  # TODO: Take into account slugified duplicates
+            new_obj = namespace[slugify(value)]
+            if new_obj in used_uris.keys():
+                new_obj = create_unused_uri(new_obj, used_uris)
+
+            used_uris.update({new_obj: value})
+
             output.add((sub, URIRef(args.tproperty), new_obj))
             vocab.add((new_obj, RDF.type, URIRef(args.tclass)))
             vocab.add((new_obj, SKOS.prefLabel, Literal(value, lang="fi")))
