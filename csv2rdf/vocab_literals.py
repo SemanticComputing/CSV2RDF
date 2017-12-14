@@ -28,7 +28,7 @@ def create_unused_uri(uri, used_uris):
     return uri
 
 
-def vocabularize(graph, namespace, property, target_property, target_class):
+def vocabularize(graph, namespace, property, target_property, target_class, literal_lang='fi'):
     """
     Transform literal values into a RDF flat RDF vocabulary. Splits values by '/'.
 
@@ -52,7 +52,7 @@ def vocabularize(graph, namespace, property, target_property, target_class):
 
             output.add((sub, target_property, new_obj))
             vocab.add((new_obj, RDF.type, target_class))
-            vocab.add((new_obj, SKOS.prefLabel, Literal(value, lang="fi")))
+            vocab.add((new_obj, SKOS.prefLabel, Literal(value, lang=literal_lang)))
 
     log.debug('Vocabulary creation finished')
     return output, vocab
