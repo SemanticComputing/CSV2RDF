@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 #  -*- coding: UTF-8 -*-
 """
-Minimal tests for data conversion
+Tests for data conversion
 """
 import io
 import unittest
 
 from rdflib import Namespace
 from rdflib import URIRef
+from rdflib.namespace import SKOS, RDF
 
 from csv2rdf import CSV2RDF
+from csv2rdf.vocab_literals import vocabularize
 
 
 class TestCSV2RDF(unittest.TestCase):
@@ -30,4 +32,20 @@ class TestCSV2RDF(unittest.TestCase):
                                  Namespace("http://example.com/"),
                                  URIRef("http://example.com/Class"))
 
-        assert len(list(converter.data)) == 12  # 2 instances + 10 properties
+        self.assertEquals(len(list(converter.data)), 12)  # 2 instances + 10 properties
+
+    def test_vocab_literals(self):
+        converter = CSV2RDF()
+        converter.read_csv(io.StringIO(self.TEST_CSV), **{'sep': ','})
+        converter.convert_to_rdf(Namespace("http://example.com/"),
+                                 Namespace("http://example.com/"),
+                                 URIRef("http://example.com/Class"))
+
+        ns_vocab = Namespace('http://example.com/vocab/')
+        annotations, vocabulary = vocabularize(converter.data, ns_vocab,
+                                               URIRef("http://example.com/col2"), SKOS.related, SKOS.Concept)
+
+        self.assertEquals(len(annotations), 2)
+
+        self.assertEquals(vocabulary[ns_vocab['2']:RDF.type:SKOS.Concept], True)
+        self.assertEquals(vocabulary[ns_vocab['7']:RDF.type:SKOS.Concept], True)

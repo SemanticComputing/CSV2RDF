@@ -28,7 +28,7 @@ def create_unused_uri(uri, used_uris):
     return uri
 
 
-def vocabularize(graph, namespace):
+def vocabularize(graph, namespace, property, target_property, target_class):
     """
     Transform literal values into a RDF flat RDF vocabulary. Splits values by '/'.
 
@@ -41,7 +41,7 @@ def vocabularize(graph, namespace):
 
     log.debug('Starting vocabulary creation')
 
-    for (sub, obj) in graph.subject_objects(URIRef(args.property)):
+    for (sub, obj) in graph.subject_objects(property):
         for value in [occ.strip().lower() for occ in str(obj).split('/')]:
 
             new_obj = namespace[slugify(value)]
@@ -50,8 +50,8 @@ def vocabularize(graph, namespace):
 
             used_uris.update({new_obj: value})
 
-            output.add((sub, URIRef(args.tproperty), new_obj))
-            vocab.add((new_obj, RDF.type, URIRef(args.tclass)))
+            output.add((sub, target_property, new_obj))
+            vocab.add((new_obj, RDF.type, target_class))
             vocab.add((new_obj, SKOS.prefLabel, Literal(value, lang="fi")))
 
     log.debug('Vocabulary creation finished')
@@ -86,7 +86,8 @@ if __name__ == '__main__':
 
     log.debug('Parsed input file')
 
-    annotations, vocabulary = vocabularize(input_graph, ns_target)
+    annotations, vocabulary = vocabularize(input_graph, URIRef(ns_target), URIRef(args.property),
+                                           URIRef(args.tproperty), URIRef(args.tclass))
 
     annotations.serialize(format=args.format, destination=args.output)
     vocabulary.serialize(format=args.format, destination=args.output_schema)

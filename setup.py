@@ -7,7 +7,7 @@ def read(fname):
 
 setup(
     name="csv2rdf",
-    version="0.1.2",
+    version="0.1.3",
     author="Mikko Koho",
     author_email="mikko.koho@iki.fi",
     description="A tool for converting a CSV file to simple RDF",
