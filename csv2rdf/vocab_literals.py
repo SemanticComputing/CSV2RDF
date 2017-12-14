@@ -7,6 +7,7 @@ import argparse
 
 import logging
 
+import sys
 from rdflib import *
 from rdflib.namespace import SKOS
 from slugify import slugify
@@ -58,8 +59,12 @@ def vocabularize(graph, namespace, property, target_property, target_class, lite
     return output, vocab
 
 
-if __name__ == '__main__':
+def main(args):
+    """
+    Main function for running via the command line.
 
+    `args` is the list of command line arguments.
+    """
     argparser = argparse.ArgumentParser(description="Create flat ontology based on input file and property",
                                         fromfile_prefix_chars='@')
 
@@ -93,3 +98,7 @@ if __name__ == '__main__':
     vocabulary.serialize(format=args.format, destination=args.output_schema)
 
     log.debug('Serialized output files')
+
+
+if __name__ == '__main__':
+    main(sys.argv)
