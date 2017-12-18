@@ -12,19 +12,18 @@ from rdflib import *
 from rdflib.namespace import SKOS
 from slugify import slugify
 
-logging.basicConfig(filename='vocab.log', filemode='a', level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
 log = logging.getLogger(__name__)
 
 
-def create_unused_uri(uri, used_uris, value):
+def create_unused_uri(uri, used_uris):
     orig_uri = uri
     i = 1
+
     while uri in used_uris:
-        log.info('Changing duplicate URI: %s <--> %s' % (used_uris[uri], orig_uri))
         uri = "{uri}_{index}".format(uri=uri, index=i)
         i += 1
+
+    log.warning('Changing duplicate URI: %s --> %s' % (orig_uri, uri))
 
     return URIRef(uri)
 
@@ -46,10 +45,12 @@ def vocabularize(graph, namespace, property, target_property, target_class, lite
         for value in [occ.strip().lower() for occ in str(obj).split('/')]:
 
             new_obj = namespace[slugify(value)]
-            if used_uris.get(new_obj) == value:
-                new_obj = create_unused_uri(new_obj, used_uris, value)
+            if new_obj in used_uris and used_uris.get(new_obj) != value:
+                new_obj = create_unused_uri(new_obj, used_uris)
 
-            used_uris.update({new_obj: value})
+            if new_obj not in used_uris:
+                used_uris.update({new_obj: value})
+                log.debug('Found new vocabulary item')
 
             output.add((sub, target_property, new_obj))
             vocab.add((new_obj, RDF.type, target_class))
@@ -101,4 +102,7 @@ def main(args):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='vocab.log', filemode='a', level=logging.DEBUG,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
     main(sys.argv)
