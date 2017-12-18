@@ -46,7 +46,6 @@ def vocabularize(graph, namespace, property, target_property, target_class, lite
         for value in [occ.strip().lower() for occ in str(obj).split('/')]:
 
             new_obj = namespace[slugify(value)]
-            print("%s  -  %s" % (new_obj, type(new_obj)))
             if used_uris.get(new_obj) == value:
                 new_obj = create_unused_uri(new_obj, used_uris, value)
 
@@ -96,7 +95,7 @@ def main(args):
                                            URIRef(args.tproperty), URIRef(args.tclass))
 
     annotations.serialize(format=args.format, destination=args.output)
-    vocabulary.serialize(format=args.format, destination=args.output_schema)
+    vocabulary.serialize(format=args.format, destination=args.output_vocab)
 
     log.debug('Serialized output files')
 
