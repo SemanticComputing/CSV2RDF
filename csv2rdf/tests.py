@@ -11,7 +11,7 @@ from rdflib import URIRef
 from rdflib.namespace import SKOS, RDF
 
 from csv2rdf import CSV2RDF
-from csv2rdf.vocab_literals import vocabularize
+from csv2rdf.vocab_literals import vocabularize, create_unused_uri
 
 
 class TestCSV2RDF(unittest.TestCase):
@@ -49,3 +49,7 @@ class TestCSV2RDF(unittest.TestCase):
 
         self.assertEquals(vocabulary[ns_vocab['2']:RDF.type:SKOS.Concept], True)
         self.assertEquals(vocabulary[ns_vocab['7']:RDF.type:SKOS.Concept], True)
+
+    def test_create_unused_uri(self):
+        uri = create_unused_uri('http://example.com/kahmija', {'http://example.com/kahmija': 'kähmijä'}, 'kahmija')
+        self.assertEquals(uri, URIRef('http://example.com/kahmija_1'))

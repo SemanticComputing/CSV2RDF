@@ -18,7 +18,7 @@ logging.basicConfig(filename='vocab.log', filemode='a', level=logging.DEBUG,
 log = logging.getLogger(__name__)
 
 
-def create_unused_uri(uri, used_uris):
+def create_unused_uri(uri, used_uris, value):
     orig_uri = uri
     i = 1
     while uri in used_uris:
@@ -26,7 +26,7 @@ def create_unused_uri(uri, used_uris):
         uri = "{uri}_{index}".format(uri=uri, index=i)
         i += 1
 
-    return uri
+    return URIRef(uri)
 
 
 def vocabularize(graph, namespace, property, target_property, target_class, literal_lang='fi'):
@@ -46,8 +46,9 @@ def vocabularize(graph, namespace, property, target_property, target_class, lite
         for value in [occ.strip().lower() for occ in str(obj).split('/')]:
 
             new_obj = namespace[slugify(value)]
-            if new_obj in used_uris.keys():
-                new_obj = create_unused_uri(new_obj, used_uris)
+            print("%s  -  %s" % (new_obj, type(new_obj)))
+            if used_uris.get(new_obj) == value:
+                new_obj = create_unused_uri(new_obj, used_uris, value)
 
             used_uris.update({new_obj: value})
 
@@ -70,7 +71,7 @@ def main(args):
 
     argparser.add_argument("input", help="Input RDF data file")
     argparser.add_argument("output", help="Output RDF data file")
-    argparser.add_argument("output_schema", help="Output RDF schema file")
+    argparser.add_argument("output_vocab", help="Output RDF vocabulary file")
     argparser.add_argument("property", metavar="SOURCE_PROPERTY", help="Property used in input file")
     argparser.add_argument("tproperty", metavar="TARGET_PROPERTY", help="Target property for output file")
     argparser.add_argument("tclass", metavar="TARGET_CLASS", help="Target class for target property values")
@@ -91,7 +92,7 @@ def main(args):
 
     log.debug('Parsed input file')
 
-    annotations, vocabulary = vocabularize(input_graph, URIRef(ns_target), URIRef(args.property),
+    annotations, vocabulary = vocabularize(input_graph, Namespace(ns_target), URIRef(args.property),
                                            URIRef(args.tproperty), URIRef(args.tclass))
 
     annotations.serialize(format=args.format, destination=args.output)
