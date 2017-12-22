@@ -50,7 +50,7 @@ def vocabularize(graph, namespace, property, target_property, target_class, lite
 
             if new_obj not in used_uris:
                 used_uris.update({new_obj: value})
-                log.debug('Found new vocabulary item')
+                log.debug('Found new vocabulary item: %s' % value)
 
             output.add((sub, target_property, new_obj))
             vocab.add((new_obj, RDF.type, target_class))
