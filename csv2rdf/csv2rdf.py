@@ -51,6 +51,7 @@ class CSV2RDF:
         for index in range(len(self.table)):
             for column in range(len(column_headers)):
 
+                # TODO: Error handling for unknown columns
                 column_name = column_headers[column]
                 resource_uri = data_ns['r_' + str(index)]
 

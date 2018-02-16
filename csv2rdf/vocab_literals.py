@@ -44,7 +44,12 @@ def vocabularize(graph, namespace, property, target_property, target_class, lite
     for (sub, obj) in graph.subject_objects(property):
         for value in [occ.strip().lower() for occ in str(obj).split('/')]:
 
-            new_obj = namespace[slugify(value)]
+            slug = slugify(value)
+            if not slug:
+                log.warning('Skipping item with empty slugified value: %s' % value)
+                continue
+
+            new_obj = namespace[slug]
             if new_obj in used_uris and used_uris.get(new_obj) != value:
                 new_obj = create_unused_uri(new_obj, used_uris)
 
