@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #  -*- coding: UTF-8 -*-
 '''
-Create an RDF vocabulary from literal RDF values
+Create a flat RDF vocabulary from literal RDF values
 '''
 import argparse
 
@@ -16,6 +16,9 @@ log = logging.getLogger(__name__)
 
 
 def create_unused_uri(uri, used_uris):
+    """
+    Create a new URI by appending a number to the end
+    """
     orig_uri = uri
     i = 1
 
@@ -71,8 +74,7 @@ def main(args):
 
     `args` is the list of command line arguments.
     """
-    argparser = argparse.ArgumentParser(description="Create flat ontology based on input file and property",
-                                        fromfile_prefix_chars='@')
+    argparser = argparse.ArgumentParser(description=__doc__, fromfile_prefix_chars='@')
 
     argparser.add_argument("input", help="Input RDF data file")
     argparser.add_argument("output", help="Output RDF data file")
@@ -81,12 +83,9 @@ def main(args):
     argparser.add_argument("tproperty", metavar="TARGET_PROPERTY", help="Target property for output file")
     argparser.add_argument("tclass", metavar="TARGET_CLASS", help="Target class for target property values")
     argparser.add_argument("tnamespace", metavar="TARGET_NAMESPACE", help="Namespace for target values")
-
     argparser.add_argument("--remove", dest='remove', action='store_true', default=False,
                            help="Remove original property triples")
-
     argparser.add_argument("--format", default='turtle', type=str, help="Format of RDF files [default: turtle]")
-
     argparser.add_argument("--mapping", metavar='FILE', type=str,
                            help="File containing value mappings (Not implemented)")
 

@@ -66,6 +66,9 @@ class CSV2RDF:
                     self.data.add((resource_uri, property_uri, Literal(value)))
 
     def write_rdf(self, output_file_data, output_file_schema, fformat='turtle'):
+        """
+        Serialize graphs
+        """
         if output_file_data:
             self.data.serialize(format=fformat, destination=output_file_data)
         if output_file_schema:
@@ -73,7 +76,7 @@ class CSV2RDF:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='CSV2RDF')
+    parser = argparse.ArgumentParser(description=__doc__)
 
     parser.add_argument("input", help="Input CSV file")
     parser.add_argument("--outdata", help="Output RDF data file", default="output_data.ttl")
